@@ -1,0 +1,21 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install the latest Erlang with asdf
+      run: asdf install erlang latest
+    - name: test
+      run: ls
