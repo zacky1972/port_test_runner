@@ -15,8 +15,8 @@ jobs:
     strategy:
       matrix:
         runner: [self-hosted]
-        os: [linux, macOS]
-        arch: [x64, ARM64]
+        os: [Linux, macOS]
+        arch: [X64, ARM64]
         erlang-version: ["latest"]
         elixir-version: ["latest"]
     runs-on: ${{ matrix.runner }}, ${{ matrix.os }}, ${{ matrix.arch }}
