@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build and test OTP ${{matrix.otp}} / Elixir ${{ matrix.elixir }}
+    name: Build and test OTP ${{matrix.otp}} / Elixir ${{ matrix.elixir }} on ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-20.04]
