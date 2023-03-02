@@ -12,30 +12,21 @@ permissions:
 jobs:
   build:
     name: Build and test
-    strategy:
-      matrix:
-        runner: [self-hosted]
-        os: [Linux, macOS]
-        arch: [X64, ARM64]
-        erlang-version: ["latest"]
-        elixir-version: ["latest"]
-    runs-on: ${{ matrix.runner }} ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
-    - name: Install Erlang with asdf
-      run: asdf install erlang ${{ matrix.erlang-version }}
-    - name: Set up Erlang with asdf
-      run: asdf local erlang ${{ matrix.erlang-version }}
-    - name: Install Elixir with asdf
-      run: asdf install elixir ${{ matrix.elixir-version }}
-    - name: Set up Elixir with asdf
-      run: asdf local elixir ${{ matrix.elixir-version }}
+    - name: Set up Elixir
+      uses: erlef/setup-beam@988e02bfe678367a02564f65ca2e37726dc0268f
+      with:
+        elixir-version: '1.14.3' # Define the elixir version [required]
+        otp-version: '25.2.3' # Define the OTP version [required]
     - name: Restore dependencies cache
       uses: actions/cache@v3
       with:
         path: deps
-        key: ${{ runner.os }}-${{ runner.arch }}-${{ runner.elixir-version }}-${{ runner.erlang-version }}-mix-${{ hashFiles('**/mix.lock') }}
-        restore-keys: ${{ runner.os }}-${{ runner.arch }}-${{ runner.elixir-version }}-${{ runner.erlang-version }}-mix-
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
     - name: Install dependencies
       run: mix deps.get
     - name: Run tests
