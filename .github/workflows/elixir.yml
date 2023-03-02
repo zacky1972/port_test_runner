@@ -12,10 +12,31 @@ permissions:
 jobs:
   build:
     name: Build and test
-    runs-on: self-hosted
+    strategy:
+      matrix:
+        runner: [self-hosted]
+        os: [linux, macOS]
+        arch: [x64, ARM64]
+        erlang-version: ["latest"]
+        elixir-version: ["latest"]
+    runs-on: ${{ matrix.runner,  matrix.os, matrix.arch }}
     steps:
     - uses: actions/checkout@v3
-    - name: Install the latest Erlang with asdf
-      run: asdf install erlang latest
-    - name: test
-      run: ls
+    - name: Install Erlang with asdf
+      run: asdf install erlang ${{ matrix.erlang-version }}
+    - name: Set up Erlang with asdf
+      run: asdf local erlang ${{ matrix.erlang-version }}
+    - name: Install Elixir with asdf
+      run: asdf install elixir ${{ matrix.elixir-version }}
+    - name: Set up Elixir with asdf
+      run: asdf local elixir ${{ matrix.elixir-version }}
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ runner.elixir-version }}-${{ runner.erlang-version }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{ runner.arch }}-${{ runner.elixir-version }}-${{ runner.erlang-version }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run tests
+      run: mix test
