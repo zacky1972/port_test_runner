@@ -19,7 +19,7 @@ jobs:
         arch: [x64, ARM64]
         erlang-version: ["latest"]
         elixir-version: ["latest"]
-    runs-on: ${{ matrix.runner,  matrix.os, matrix.arch }}
+    runs-on: ${{ matrix.runner }}, ${{ matrix.os }}, ${{ matrix.arch }}
     steps:
     - uses: actions/checkout@v3
     - name: Install Erlang with asdf
