@@ -12,11 +12,12 @@ permissions:
 jobs:
   build:
     name: Build and test OTP ${{matrix.otp}} / Elixir ${{ matrix.elixir }}
-    runs-on: ubuntu-latest
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         otp: ['25.2.3']
         elixir: ['1.14.3']
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - uses: erlef/setup-beam@v1
