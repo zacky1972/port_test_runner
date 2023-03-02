@@ -1,0 +1,36 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test OTP ${{matrix.otp}} / Elixir ${{ matrix.elixir }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        otp: ['25.2.3']
+        elixir: ['1.14.3']
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: erlef/setup-beam@v1
+      with:
+        otp-version: ${{matrix.otp}}
+        elixir-version: ${{matrix.elixir}}
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-${{matrix.otp}}-${{matrix.elixir}}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-${{matrix.otp}}-${{matrix.elixir}}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run tests
+      run: mix test
