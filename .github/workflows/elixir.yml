@@ -14,7 +14,7 @@ jobs:
     name: Build and test OTP ${{matrix.otp}} / Elixir ${{ matrix.elixir }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04, ubuntu-20.04]
         otp: ['25.2.3']
         elixir: ['1.14.3']
     runs-on: ${{ matrix.os }}
